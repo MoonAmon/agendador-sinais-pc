@@ -1,0 +1,94 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Agendador: Configurar JAVA_HOME",
+            "type": "shell",
+            "command": "cmd",
+            "args": ["/c", "setup-java.cmd"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Agendador: Compilar",
+            "type": "shell",
+            "command": "cmd",
+            "args": ["/c", "set JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.7.6-hotspot && mvnw.cmd clean compile"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Agendador: Executar",
+            "type": "shell",
+            "command": "cmd",
+            "args": ["/c", "executar.cmd"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Agendador: Compilar e Executar",
+            "type": "shell",
+            "command": "cmd",
+            "args": ["/c", "set JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.7.6-hotspot && mvnw.cmd clean compile exec:java -Dexec.mainClass=com.agendador.App"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Agendador: Gerar JAR",
+            "type": "shell", 
+            "command": "cmd",
+            "args": ["/c", "set JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.7.6-hotspot && mvnw.cmd clean package"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Agendador: Executar Testes",
+            "type": "shell",
+            "command": "cmd", 
+            "args": ["/c", "set JAVA_HOME=C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.7.6-hotspot && mvnw.cmd test"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

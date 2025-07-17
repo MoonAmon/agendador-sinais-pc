@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Agendador de Sinais",
+            "request": "launch",
+            "mainClass": "com.agendador.App",
+            "projectName": "agendador-sinais",
+            "env": {
+                "JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.7.6-hotspot"
+            },
+            "vmArgs": [
+                "-Dfile.encoding=UTF-8"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}

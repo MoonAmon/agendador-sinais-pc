@@ -1,0 +1,15 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.saveActions.organizeImports": true,
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.debug.settings.showQualifiedNames": false,
+    "java.debug.settings.showLogicalStructure": true,
+    "java.debug.settings.showStaticVariables": false,
+    "files.exclude": {
+        "**/target": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    }
+}
