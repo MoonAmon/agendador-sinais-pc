@@ -35,6 +35,24 @@ public class AudioManager {
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
                 AudioFormat format = audioStream.getFormat();
                 
+                // Para MP3 e outros formatos comprimidos, converter para PCM
+                AudioFormat decodedFormat = new AudioFormat(
+                    AudioFormat.Encoding.PCM_SIGNED,
+                    format.getSampleRate(),
+                    16,
+                    format.getChannels(),
+                    format.getChannels() * 2,
+                    format.getSampleRate(),
+                    false
+                );
+                
+                // Obter stream decodificado se necessário
+                AudioInputStream decodedAudioStream = audioStream;
+                if (!format.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
+                    decodedAudioStream = AudioSystem.getAudioInputStream(decodedFormat, audioStream);
+                    format = decodedFormat;
+                }
+                
                 // Configurar mixer específico se fornecido
                 Mixer mixer = obterMixer(dispositivoAudio);
                 DataLine.Info info = new DataLine.Info(Clip.class, format);
@@ -45,7 +63,7 @@ public class AudioManager {
                     currentClip = AudioSystem.getClip();
                 }
                 
-                currentClip.open(audioStream);
+                currentClip.open(decodedAudioStream);
                 
                 // Configurar para loop contínuo
                 currentClip.loop(Clip.LOOP_CONTINUOUSLY);

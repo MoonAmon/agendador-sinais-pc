@@ -52,12 +52,11 @@ public class SchedulerManager {
         }
         
         isRunning = true;
-        
-        // Verificar agendamentos a cada minuto
-        scheduler.scheduleAtFixedRate(this::verificarAgendamentos, 0, 1, TimeUnit.MINUTES);
-        
-        System.out.println("Agendador iniciado - verificações a cada minuto");
-        
+        // Verificar agendamentos a cada segundo
+        scheduler.scheduleAtFixedRate(this::verificarAgendamentos, 0, 1, TimeUnit.SECONDS);
+
+        System.out.println("Agendador iniciado - verificações a cada segundo");
+
         if (listener != null) {
             listener.onSchedulerStarted();
         }

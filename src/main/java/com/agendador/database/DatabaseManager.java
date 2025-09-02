@@ -2,6 +2,8 @@ package com.agendador.database;
 
 import com.agendador.model.Agendamento;
 import com.agendador.model.DiaSemana;
+
+import java.io.File;
 import java.sql.*;
 import java.time.LocalTime;
 import java.util.*;
@@ -19,6 +21,21 @@ public class DatabaseManager {
     
     private DatabaseManager() {
         // Construtor privado para Singleton
+        String userHome = System.getProperty("user.home");
+        String appDataDir = userHome + File.separator + ".agendador";
+
+        // Criar diretório de dados se não existir
+        File appDir = new File(appDataDir);
+        if (!appDir.exists()) {
+            boolean created = appDir.mkdirs();
+            if (!created) {
+                System.err.println("Erro ao criar diretório de dados: " + appDataDir);
+                // Fallback para temp
+                appDataDir = System.getProperty("java.io.tmpdir") + File.separator + "agendador";
+                appDir = new File(appDataDir);
+                appDir.mkdirs();
+            }
+        }
     }
     
     public static synchronized DatabaseManager getInstance() {

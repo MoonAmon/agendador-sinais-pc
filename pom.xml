@@ -41,6 +41,25 @@
             <version>2.16.1</version>
         </dependency>
         
+        <!-- MP3 Support - JavaZOOM libraries -->
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>1.9.5.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>tritonus-share</artifactId>
+            <version>0.3.7.4</version>
+        </dependency>
+        
         <!-- JUnit for testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -87,6 +106,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.2</version>
+            </plugin>
+            
+            <!-- Plugin para gerar instalador nativo com jpackage -->
+            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.6.5</version>
+                <configuration>
+                    <name>AgendadorSinais</name>
+                    <appVersion>1.0.0</appVersion>
+                    <vendor>Thiago Amancio Reis Caetano</vendor>
+                    <destination>target/installer</destination>
+                    <input>target</input>
+                    <mainJar>agendador-sinais-1.0.0.jar</mainJar>
+                    <mainClass>com.agendador.App</mainClass>
+                    <javaOptions>
+                        <option>-Dfile.encoding=UTF-8</option>
+                        <option>-Djava.awt.headless=false</option>
+                    </javaOptions>
+                    <winMenu>true</winMenu>
+                    <winDirChooser>true</winDirChooser>
+                    <winShortcut>true</winShortcut>
+                    <winPerUserInstall>true</winPerUserInstall>
+                    <winUpgradeUuid>12345678-1234-1234-1234-123456789012</winUpgradeUuid>
+                </configuration>
             </plugin>
         </plugins>
     </build>

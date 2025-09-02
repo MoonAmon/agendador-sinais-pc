@@ -1,58 +1,101 @@
 package com.agendador;
 
-import com.agendador.controller.AgendadorController;
 import com.agendador.database.DatabaseManager;
-import com.agendador.tray.SystemTrayManager;
+import com.agendador.util.SingleInstanceManager;
 import com.agendador.view.MainWindow;
-import javax.swing.*;
-import java.awt.*;
+
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.sql.SQLException;
 
 /**
- * Classe principal do Agendador de Sinais
- * Aplicação desktop para agendamento de reprodução de áudios
+ * Classe principal da aplicação Agendador de Sinais
  */
 public class App {
     
     public static void main(String[] args) {
-        // Configurar Look and Feel para melhor aparência
+        // 1. Verificar instância única ANTES de qualquer inicialização
+        SingleInstanceManager singleInstance = SingleInstanceManager.getInstance();
+        
+        if (!singleInstance.tryLock()) {
+            System.err.println("Outra instância já está executando!");
+            singleInstance.showAlreadyRunningMessage();
+            System.exit(1);
+            return;
+        }
+        
+        System.out.println("✅ Instância única confirmada - iniciando aplicação...");
+        
+        // 2. Configurar shutdown hook para limpeza automática
+        singleInstance.setupShutdownHook();
+        
+        // 3. Configurar look and feel nativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
+            System.out.println("Look and Feel configurado: " + UIManager.getLookAndFeel().getName());
+        } catch (ClassNotFoundException | InstantiationException | 
+                IllegalAccessException | UnsupportedLookAndFeelException e) {
             System.err.println("Erro ao configurar Look and Feel: " + e.getMessage());
         }
         
-        // Verificar se o sistema suporta system tray
-        if (!SystemTray.isSupported()) {
-            System.err.println("System Tray não é suportado neste sistema.");
+        // 4. Configurar encoding UTF-8
+        System.setProperty("file.encoding", "UTF-8");
+        
+        // 5. Inicializar banco de dados
+        DatabaseManager dbManager = DatabaseManager.getInstance();
+        try {
+            dbManager.initializeDatabase();
+            System.out.println("✅ Banco de dados inicializado com sucesso");
+            
+            // Mostrar informações do banco
+            String dbInfo = dbManager.obterInformacoesBanco();
+            System.out.println("📊 Informações do banco de dados:\n" + dbInfo);
+            
+        } catch (SQLException e) {
+            System.err.println("❌ Erro fatal ao inicializar banco de dados: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Mostrar erro ao usuário e sair
+            javax.swing.JOptionPane.showMessageDialog(
+                null,
+                "Erro ao inicializar banco de dados:\n" + e.getMessage() + 
+                "\n\nA aplicação será encerrada.",
+                "Erro Fatal",
+                javax.swing.JOptionPane.ERROR_MESSAGE
+            );
+            
+            singleInstance.releaseLocks();
+            System.exit(1);
+            return;
         }
         
-        // Executar na EDT (Event Dispatch Thread)
+        // 6. Inicializar interface gráfica na EDT
         SwingUtilities.invokeLater(() -> {
             try {
-                // Inicializar banco de dados
-                DatabaseManager.getInstance().initializeDatabase();
+                System.out.println("🚀 Iniciando interface gráfica...");
                 
-                // Criar e inicializar a aplicação
-                AgendadorController controller = new AgendadorController();
-                MainWindow mainWindow = new MainWindow(controller);
+                // Mostrar informações da instância
+                System.out.println("📋 " + singleInstance.getInstanceInfo());
                 
-                // Configurar system tray
-                SystemTrayManager trayManager = new SystemTrayManager(mainWindow, controller);
-                trayManager.initializeSystemTray();
-                mainWindow.setSystemTrayManager(trayManager);
-                
-                // Exibir janela principal
+                MainWindow mainWindow = new MainWindow();
                 mainWindow.setVisible(true);
                 
-                System.out.println("Agendador de Sinais iniciado com sucesso!");
+                System.out.println("✅ Aplicação iniciada com sucesso!");
+                System.out.println("💡 Para encerrar, feche a janela ou use o system tray");
                 
             } catch (Exception e) {
-                System.err.println("Erro ao inicializar aplicação: " + e.getMessage());
+                System.err.println("❌ Erro fatal ao inicializar interface: " + e.getMessage());
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, 
-                    "Erro ao inicializar aplicação:\n" + e.getMessage(),
-                    "Erro", 
-                    JOptionPane.ERROR_MESSAGE);
+                
+                javax.swing.JOptionPane.showMessageDialog(
+                    null,
+                    "Erro ao inicializar interface gráfica:\n" + e.getMessage(),
+                    "Erro Fatal",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+                
+                singleInstance.releaseLocks();
                 System.exit(1);
             }
         });

@@ -39,6 +39,29 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.2</version>
       </plugin>
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>1.6.5</version>
+        <configuration>
+          <name>AgendadorSinais</name>
+          <appVersion>1.0.0</appVersion>
+          <vendor>Thiago Amancio Reis Caetano</vendor>
+          <destination>target/installer</destination>
+          <input>target</input>
+          <mainJar>agendador-sinais-1.0.0.jar</mainJar>
+          <mainClass>com.agendador.App</mainClass>
+          <javaOptions>
+            <option>-Dfile.encoding=UTF-8</option>
+            <option>-Djava.awt.headless=false</option>
+          </javaOptions>
+          <winMenu>true</winMenu>
+          <winDirChooser>true</winDirChooser>
+          <winShortcut>true</winShortcut>
+          <winPerUserInstall>true</winPerUserInstall>
+          <winUpgradeUuid>12345678-1234-1234-1234-123456789012</winUpgradeUuid>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
